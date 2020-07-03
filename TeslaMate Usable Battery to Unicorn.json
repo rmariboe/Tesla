@@ -1,0 +1,723 @@
+[
+    {
+        "id": "91f69ac9.9f7508",
+        "type": "mqtt in",
+        "z": "b2f983b5.3ecb08",
+        "name": "Tesla Usable Battery",
+        "topic": "teslamate/cars/1/usable_battery_level",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "b2092247.9daaa8",
+        "x": 330,
+        "y": 140,
+        "wires": [
+            [
+                "ae852a7c.73a66"
+            ]
+        ]
+    },
+    {
+        "id": "b49df88c.06b158",
+        "type": "function",
+        "z": "b2f983b5.3ecb08",
+        "name": "LEDs",
+        "func": "var maxLEDs = 8;\nvar maxBrightness = Math.pow((1-Math.sin(msg.hue/360*Math.PI)/3*2), 3);\nvar brightness = maxBrightness/msg.LEDs;\n\nfor (i=0; i < msg.LEDs; i++) {\n    msg.topic = 'pixel.0.' + i;\n    node.send(msg);\n}\n\nmsg.payload = '0,0,0'\nfor (i=i; i < maxLEDs; i++) {\n    msg.topic = 'pixel.0.' + i;\n    node.send(msg);\n}\n\nmsg.topic = 'brightness';\nmsg.payload = brightness\nnode.send(msg);\nnode.done();\nreturn",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1190,
+        "y": 360,
+        "wires": [
+            [
+                "61a877ef.1af6c8",
+                "79b18e56.3670c"
+            ]
+        ]
+    },
+    {
+        "id": "85a62c0e.e2a308",
+        "type": "range",
+        "z": "b2f983b5.3ecb08",
+        "minin": "0",
+        "maxin": "20",
+        "minout": "0",
+        "maxout": "5",
+        "action": "clamp",
+        "round": false,
+        "property": "payload",
+        "name": "Hue",
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "9e2dd67f.cf23a"
+            ]
+        ]
+    },
+    {
+        "id": "41e5be3a.a17608",
+        "type": "range",
+        "z": "b2f983b5.3ecb08",
+        "minin": "1",
+        "maxin": "101",
+        "minout": "0.5",
+        "maxout": "8.5",
+        "action": "roll",
+        "round": true,
+        "property": "payload",
+        "name": "LEDs",
+        "x": 710,
+        "y": 320,
+        "wires": [
+            [
+                "24e7a5a8.09576a"
+            ]
+        ]
+    },
+    {
+        "id": "c3a21a5f.196da",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "Saturation",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "100",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 240,
+        "wires": [
+            [
+                "ba75bb18.8ebbb8"
+            ]
+        ]
+    },
+    {
+        "id": "9e2dd67f.cf23a",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "hue",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 920,
+        "y": 140,
+        "wires": [
+            [
+                "98e3cbb9.ac08f"
+            ]
+        ]
+    },
+    {
+        "id": "98e3cbb9.ac08f",
+        "type": "join",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "4",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1110,
+        "y": 200,
+        "wires": [
+            [
+                "b2cef27e.f2ddb8",
+                "79b18e56.3670c"
+            ]
+        ]
+    },
+    {
+        "id": "ba75bb18.8ebbb8",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "saturation",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 920,
+        "y": 240,
+        "wires": [
+            [
+                "98e3cbb9.ac08f"
+            ]
+        ]
+    },
+    {
+        "id": "6b31db93.a5ed44",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "lightness",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 920,
+        "y": 280,
+        "wires": [
+            [
+                "98e3cbb9.ac08f"
+            ]
+        ]
+    },
+    {
+        "id": "24e7a5a8.09576a",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "LEDs",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 920,
+        "y": 320,
+        "wires": [
+            [
+                "98e3cbb9.ac08f"
+            ]
+        ]
+    },
+    {
+        "id": "b485f63.31acd08",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "Lightness",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "50",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 720,
+        "y": 280,
+        "wires": [
+            [
+                "6b31db93.a5ed44"
+            ]
+        ]
+    },
+    {
+        "id": "b2cef27e.f2ddb8",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "LEDs",
+                "pt": "msg",
+                "to": "payload.LEDs",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "hue",
+                "pt": "msg",
+                "to": "payload.hue",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1160,
+        "y": 240,
+        "wires": [
+            [
+                "22555ae8.d787ae"
+            ]
+        ]
+    },
+    {
+        "id": "f6147f6e.ab67b",
+        "type": "switch",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "10",
+                "vt": "num"
+            },
+            {
+                "t": "lte",
+                "v": "80",
+                "vt": "num"
+            },
+            {
+                "t": "lte",
+                "v": "90",
+                "vt": "num"
+            },
+            {
+                "t": "lte",
+                "v": "100",
+                "vt": "num"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 4,
+        "x": 570,
+        "y": 140,
+        "wires": [
+            [
+                "85a62c0e.e2a308"
+            ],
+            [
+                "febaa911.882998"
+            ],
+            [
+                "2b4323dd.2ee63c"
+            ],
+            [
+                "a1c9f8df.65f08"
+            ]
+        ]
+    },
+    {
+        "id": "febaa911.882998",
+        "type": "range",
+        "z": "b2f983b5.3ecb08",
+        "minin": "20",
+        "maxin": "80",
+        "minout": "5",
+        "maxout": "120",
+        "action": "clamp",
+        "round": false,
+        "property": "payload",
+        "name": "Hue",
+        "x": 710,
+        "y": 120,
+        "wires": [
+            [
+                "9e2dd67f.cf23a"
+            ]
+        ]
+    },
+    {
+        "id": "2b4323dd.2ee63c",
+        "type": "range",
+        "z": "b2f983b5.3ecb08",
+        "minin": "80",
+        "maxin": "90",
+        "minout": "120",
+        "maxout": "240",
+        "action": "clamp",
+        "round": false,
+        "property": "payload",
+        "name": "Hue",
+        "x": 710,
+        "y": 160,
+        "wires": [
+            [
+                "9e2dd67f.cf23a"
+            ]
+        ]
+    },
+    {
+        "id": "a1c9f8df.65f08",
+        "type": "range",
+        "z": "b2f983b5.3ecb08",
+        "minin": "90",
+        "maxin": "100",
+        "minout": "240",
+        "maxout": "360",
+        "action": "clamp",
+        "round": false,
+        "property": "payload",
+        "name": "Hue",
+        "x": 710,
+        "y": 200,
+        "wires": [
+            [
+                "9e2dd67f.cf23a"
+            ]
+        ]
+    },
+    {
+        "id": "22555ae8.d787ae",
+        "type": "function",
+        "z": "b2f983b5.3ecb08",
+        "name": "Lightness",
+        "func": "//var maxLEDs = 8;\n//var maxLightness = 50*Math.pow((1-Math.sin(msg.hue/360*Math.PI)/3*2), 1);\n//var lightness = maxLightness/msg.LEDs;\n\n//msg.payload.lightness = lightness\nmsg.payload.lightness = 50/3*2\nnode.send(msg);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1160,
+        "y": 280,
+        "wires": [
+            [
+                "4334c12e.29243"
+            ]
+        ]
+    },
+    {
+        "id": "c1bf64c3.9cca28",
+        "type": "inject",
+        "z": "b2f983b5.3ecb08",
+        "name": "Test",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 460,
+        "wires": [
+            [
+                "8464ec46.985d78"
+            ]
+        ]
+    },
+    {
+        "id": "dfe5d384.3b52b8",
+        "type": "debug",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 390,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "fdf7453b.ad128",
+        "type": "delay",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "100",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 250,
+        "y": 580,
+        "wires": [
+            [
+                "e1a81af1.742b3"
+            ]
+        ]
+    },
+    {
+        "id": "e1a81af1.742b3",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "Increment",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "($flowContext(\"test\")+1)%101",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "test",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 540,
+        "wires": [
+            [
+                "fdf7453b.ad128",
+                "dfe5d384.3b52b8",
+                "f6147f6e.ab67b",
+                "c3a21a5f.196da",
+                "b485f63.31acd08",
+                "41e5be3a.a17608"
+            ]
+        ]
+    },
+    {
+        "id": "8464ec46.985d78",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "test",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 210,
+        "y": 500,
+        "wires": [
+            [
+                "e1a81af1.742b3"
+            ]
+        ]
+    },
+    {
+        "id": "9aed8a62.e1095",
+        "type": "inject",
+        "z": "b2f983b5.3ecb08",
+        "name": "Stop",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 190,
+        "y": 660,
+        "wires": [
+            [
+                "35ec3595.a82ad2",
+                "bd9b7a9e.4af318"
+            ]
+        ]
+    },
+    {
+        "id": "35ec3595.a82ad2",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "reset",
+                "pt": "msg",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 620,
+        "wires": [
+            [
+                "fdf7453b.ad128"
+            ]
+        ]
+    },
+    {
+        "id": "ae852a7c.73a66",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "Save to flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tesla.usable_battery_level",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 200,
+        "wires": [
+            [
+                "f6147f6e.ab67b",
+                "c3a21a5f.196da",
+                "b485f63.31acd08",
+                "41e5be3a.a17608"
+            ]
+        ]
+    },
+    {
+        "id": "bd9b7a9e.4af318",
+        "type": "change",
+        "z": "b2f983b5.3ecb08",
+        "name": "Get Usable Battery Level from flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tesla.usable_battery_level",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 700,
+        "wires": [
+            [
+                "f6147f6e.ab67b",
+                "c3a21a5f.196da",
+                "b485f63.31acd08",
+                "41e5be3a.a17608"
+            ]
+        ]
+    },
+    {
+        "id": "4334c12e.29243",
+        "type": "color-convert",
+        "z": "b2f983b5.3ecb08",
+        "input": "hsl",
+        "output": "rgb",
+        "outputType": "string",
+        "scaleInput": false,
+        "x": 1190,
+        "y": 320,
+        "wires": [
+            [
+                "b49df88c.06b158"
+            ]
+        ]
+    },
+    {
+        "id": "61a877ef.1af6c8",
+        "type": "rpi-unicorn out",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "x": 1240,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "79b18e56.3670c",
+        "type": "debug",
+        "z": "b2f983b5.3ecb08",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1470,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b2092247.9daaa8",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "TeslaMate",
+        "broker": "192.168.1.101",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": ""
+    }
+]
