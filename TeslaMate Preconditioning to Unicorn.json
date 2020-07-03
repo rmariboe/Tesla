@@ -1,0 +1,142 @@
+[
+    {
+        "id": "c9321ef7.105fd",
+        "type": "mqtt in",
+        "z": "b77ca65b.c48f48",
+        "name": "Tesla Is Preconditioning",
+        "topic": "teslamate/cars/1/is_preconditioning",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "b2092247.9daaa8",
+        "x": 140,
+        "y": 820,
+        "wires": [
+            [
+                "ba33bfe4.93fe7",
+                "19f6aed0.27d8f9"
+            ]
+        ]
+    },
+    {
+        "id": "19f6aed0.27d8f9",
+        "type": "debug",
+        "z": "b77ca65b.c48f48",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 350,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "ba33bfe4.93fe7",
+        "type": "change",
+        "z": "b77ca65b.c48f48",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "$split(msg.topic, \"/\")[-1]",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 130,
+        "y": 880,
+        "wires": [
+            [
+                "19f6aed0.27d8f9",
+                "f944ed7c.31802"
+            ]
+        ]
+    },
+    {
+        "id": "f944ed7c.31802",
+        "type": "join",
+        "z": "b77ca65b.c48f48",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "1",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 130,
+        "y": 920,
+        "wires": [
+            [
+                "32078910.144bae"
+            ]
+        ]
+    },
+    {
+        "id": "32078910.144bae",
+        "type": "function",
+        "z": "b77ca65b.c48f48",
+        "name": "LEDs",
+        "func": "msg.tesla = msg.payload;\nmsg.tesla.latest_change = msg.topic;\nif (msg.tesla.is_preconditioning == \"true\") {\n msg.topic = 'pixel.3.0'\n msg.payload = \"255,127,0\"\n node.send(msg);\n}\nelse {\n msg.topic = 'pixel.3.0'\n msg.payload = \"0,0,0\"\n node.send(msg);\n}\nnode.done();\nreturn",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 150,
+        "y": 960,
+        "wires": [
+            [
+                "19f6aed0.27d8f9",
+                "bfa21f15.6f102"
+            ]
+        ]
+    },
+    {
+        "id": "bfa21f15.6f102",
+        "type": "rpi-unicorn out",
+        "z": "b77ca65b.c48f48",
+        "name": "",
+        "x": 200,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "b2092247.9daaa8",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "TeslaMate",
+        "broker": "192.168.1.101",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": ""
+    }
+]
